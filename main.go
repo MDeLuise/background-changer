@@ -2,10 +2,13 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/hbagdi/go-unsplash/unsplash"
 	"github.com/joho/godotenv"
@@ -14,11 +17,6 @@ import (
 
 const (
 	baseURL string = "https://images.unsplash.com"
-	imgName string = "background.png"
-)
-
-var (
-	collectionIDs []int = []int{880012}
 )
 
 func main() {
@@ -34,20 +32,34 @@ func main() {
 		log.Fatal("value of key empty")
 	}
 
+	imgName := flag.String("name", "background.png", "Name of the downloaded image")
+	downloadDirectory := flag.String("directory", ".", "Directory used to download the images")
+	collectionIDsString := flag.String("collections", "880012", "Collection IDs to use as download filter")
+	flag.Parse()
+	collectionIDs := stringToArrayOfInt(collectionIDsString)
+
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: "Client-ID " + key},
 	)
 	client := oauth2.NewClient(oauth2.NoContext, ts)
 	unsplash := unsplash.New(client)
-	randomID := getRandomPhotoId(unsplash)
+	randomID := getRandomPhotoId(unsplash, collectionIDs)
 	downloadUrl := baseURL + getDownloadURL(unsplash, randomID)
-	downloadDirectory := "."
-	if len(os.Args) > 1 {
-		downloadDirectory = os.Args[1]
-	}
-	if err := downloadFile(downloadUrl, downloadDirectory+"/"+imgName); err != nil {
+	if err := downloadFile(downloadUrl, *downloadDirectory+"/"+*imgName); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func stringToArrayOfInt(stringArray *string) *[]int {
+	result := make([]int, 1)
+	for _, elStr := range strings.Split(*stringArray, " ") {
+		if elInt, err := strconv.Atoi(elStr); err != nil {
+			log.Fatal(err)
+		} else {
+			result = append(result, elInt)
+		}
+	}
+	return &result
 }
 
 func getDownloadURL(client *unsplash.Unsplash, id *string) string {
@@ -58,10 +70,10 @@ func getDownloadURL(client *unsplash.Unsplash, id *string) string {
 	return url.URL.Path
 }
 
-func getRandomPhotoId(client *unsplash.Unsplash) *string {
+func getRandomPhotoId(client *unsplash.Unsplash, collectionIDs *[]int) *string {
 	opts := &unsplash.RandomPhotoOpt{
 		Orientation:   "landscape",
-		CollectionIDs: collectionIDs,
+		CollectionIDs: *collectionIDs,
 	}
 	randomPhoto, _, err := client.Photos.Random(opts)
 	if err != nil {
