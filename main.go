@@ -4,13 +4,17 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 	"strings"
+	"time"
 
-	"github.com/hbagdi/go-unsplash/unsplash"
+	"main/unsplash"
+
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
@@ -32,9 +36,10 @@ func main() {
 		log.Fatal("value of key empty")
 	}
 
-	imgName := flag.String("name", "background.png", "Name of the downloaded image")
+	imgName := flag.String("name", strconv.FormatInt(time.Now().Unix(), 10)+".png", "Name of the downloaded image")
 	downloadDirectory := flag.String("directory", ".", "Directory used to download the images")
 	collectionIDsString := flag.String("collections", "880012", "Collection IDs to use as download filter")
+	removeOldImages := flag.Bool("clean", true, "Remove old downloaded images")
 	flag.Parse()
 	collectionIDs := stringToArrayOfInt(collectionIDsString)
 
@@ -45,6 +50,9 @@ func main() {
 	unsplash := unsplash.New(client)
 	randomID := getRandomPhotoId(unsplash, collectionIDs)
 	downloadUrl := baseURL + getDownloadURL(unsplash, randomID)
+	if *removeOldImages {
+		removeAllImageInDirectory(*downloadDirectory)
+	}
 	if err := downloadFile(downloadUrl, *downloadDirectory+"/"+*imgName); err != nil {
 		log.Fatal(err)
 	}
@@ -71,9 +79,12 @@ func getDownloadURL(client *unsplash.Unsplash, id *string) string {
 }
 
 func getRandomPhotoId(client *unsplash.Unsplash, collectionIDs *[]int) *string {
+	topics := make([]string, 1)
+	topics = append(topics, "bo8jQKTaE0Y")
 	opts := &unsplash.RandomPhotoOpt{
 		Orientation:   "landscape",
 		CollectionIDs: *collectionIDs,
+		TopicIDs: topics,
 	}
 	randomPhoto, _, err := client.Photos.Random(opts)
 	if err != nil {
@@ -101,5 +112,16 @@ func downloadFile(URL, fileName string) error {
 	if _, err = io.Copy(file, response.Body); err != nil {
 		return err
 	}
+	return nil
+}
+
+func removeAllImageInDirectory(dirPath string) error {
+	dir, err := ioutil.ReadDir(dirPath)
+    if err != nil {
+		return err
+	}
+	for _, d := range dir {
+        os.RemoveAll(path.Join([]string{dirPath, d.Name()}...))
+    }
 	return nil
 }

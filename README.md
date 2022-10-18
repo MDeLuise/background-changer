@@ -9,7 +9,7 @@ Download random background image from [unsplash](https://unsplash.com/).
 1. Create a `.env` file in the project directory and put in it `key=<unsplash_developer_key>`
 
 ## Run
-Run the script with `go run main.go` to download a new image in the current directory with the predefined name `background.png`.
+Run the script with `go run main.go` to download a new image in the current directory with the predefined name `<unix_timestamp>.png`.
 
 In order to automatically run the script, add the execution of it in the crontab.
 
@@ -18,3 +18,4 @@ The default behaviour consists in downloading images from the collection [nature
 * `-name=<img_name>` change the name of the downloaded image
 * `-directory=<path>` change the target directory used to download the images
 * `-collection="<id1, id2, ...>"` filter the downloaded image using the specified collection IDs
+* `-clean="<true|false>"` remove old downloaded images
