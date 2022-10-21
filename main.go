@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -119,8 +119,12 @@ func removeAllImageInDirectory(dirPath string) error {
 	if err != nil {
 		return err
 	}
-	for _, d := range dir {
-		os.RemoveAll(path.Join([]string{dirPath, d.Name()}...))
+	for _, file := range dir {
+		if file.Mode().IsRegular() {
+			if filepath.Ext(file.Name()) == ".png" {
+				os.Remove(file.Name())
+			}
+		}
 	}
 	return nil
 }
