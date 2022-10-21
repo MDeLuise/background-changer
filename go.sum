@@ -11,6 +11,8 @@ github.com/google/go-querystring v1.1.0 h1:AnCroh3fv4ZBgVIf1Iwtovgjaw/GiKJo8M8yD
 github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=
 github.com/hbagdi/go-unsplash v0.0.0-20220707053053-b397ee820b12 h1:Vzma8X3LIgudB5yM4Kr2tXMApK/zocbLYGpeQ64+g9E=
 github.com/hbagdi/go-unsplash v0.0.0-20220707053053-b397ee820b12/go.mod h1:DEzhU5CxSdknL3hUXTco1n5AO2BZHs4KeJo5ADWU0Iw=
+github.com/hbagdi/go-unsplash v0.0.0-20220920231246-14121bdf6d94 h1:dhBDGgWOBSG58zpXDZ8x7yS8pdlY5GII+GAgsPV/oXI=
+github.com/hbagdi/go-unsplash v0.0.0-20220920231246-14121bdf6d94/go.mod h1:DEzhU5CxSdknL3hUXTco1n5AO2BZHs4KeJo5ADWU0Iw=
 github.com/jarcoal/httpmock v1.0.4/go.mod h1:ATjnClrvW/3tijVmpL/va5Z3aAyGvqU3gCT8nX0Txik=
 github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
 github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=

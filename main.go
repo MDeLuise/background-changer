@@ -13,8 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"main/unsplash"
-
+	"github.com/hbagdi/go-unsplash/unsplash"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
@@ -84,7 +83,7 @@ func getRandomPhotoId(client *unsplash.Unsplash, collectionIDs *[]int) *string {
 	opts := &unsplash.RandomPhotoOpt{
 		Orientation:   "landscape",
 		CollectionIDs: *collectionIDs,
-		TopicIDs: topics,
+		TopicIDs:      topics,
 	}
 	randomPhoto, _, err := client.Photos.Random(opts)
 	if err != nil {
@@ -117,11 +116,11 @@ func downloadFile(URL, fileName string) error {
 
 func removeAllImageInDirectory(dirPath string) error {
 	dir, err := ioutil.ReadDir(dirPath)
-    if err != nil {
+	if err != nil {
 		return err
 	}
 	for _, d := range dir {
-        os.RemoveAll(path.Join([]string{dirPath, d.Name()}...))
-    }
+		os.RemoveAll(path.Join([]string{dirPath, d.Name()}...))
+	}
 	return nil
 }
